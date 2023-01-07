@@ -12,7 +12,7 @@ from .views import (
 
 urlpatterns = [
     path('products/', ProductView.as_view()),
-    path('products/<int:pk>', ProductDetailView.as_view()),
+    path('products/<str:slug>', ProductDetailView.as_view()),
     # path('images/<int:pk>', ImageView.as_view(), name='image-detail'),
 ]
 

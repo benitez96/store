@@ -6,9 +6,14 @@ from .models import *
 class ImageAdminStack(admin.StackedInline):
     model = Image
 
+
+class SizesAdminStack(admin.StackedInline):
+    model = Sizes
+
 class ProductAdmin(admin.ModelAdmin):
-    inlines = [ImageAdminStack]
-    list_display = ( 'name', 'price', 'cost', 'stock', 'is_active' )
+    inlines = [ImageAdminStack, SizesAdminStack]
+    list_display = ( 'name', 'price', 'cost', 'is_active' )
+    prepopulated_fields = { 'slug': ('name',) }
 
     class Meta:
         model = Product
