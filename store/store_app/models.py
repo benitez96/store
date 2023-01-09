@@ -5,12 +5,19 @@ class Product(models.Model):
     name = models.CharField(max_length=100)
     price = models.FloatField()
     cost = models.FloatField()
-    # stock = models.IntegerField()
+    in_stock = models.BooleanField(default=True)
     is_active = models.BooleanField(default=True)
     slug = models.SlugField()
 
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
+
+    def get_sizes_stock(self):
+        exclude = ('id', 'product_id')
+        return sum([
+            getattr(self.sizes, size.attname) for size in self._meta.get_fields() \
+            if size.attname not in exclude
+        ])
 
     def main_image(self):
         image = self.images.filter(is_main=True).first()
@@ -44,4 +51,5 @@ class Sizes(models.Model):
     xl = models.PositiveSmallIntegerField(default=0)
     xxl = models.PositiveSmallIntegerField(default=0)
     xxxl = models.PositiveSmallIntegerField(default=0)
+    
 

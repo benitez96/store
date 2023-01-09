@@ -12,7 +12,7 @@ class SizesAdminStack(admin.StackedInline):
 
 class ProductAdmin(admin.ModelAdmin):
     inlines = [ImageAdminStack, SizesAdminStack]
-    list_display = ( 'name', 'price', 'cost', 'is_active' )
+    list_display = ( 'name', 'price', 'cost', 'in_stock' ,'is_active', 'get_sizes_stock' )
     prepopulated_fields = { 'slug': ('name',) }
 
     class Meta:
