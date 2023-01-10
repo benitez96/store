@@ -11,11 +11,13 @@ class Order(models.Model):
     email = models.EmailField()
     phone = models.CharField(max_length=100)
     state = models.CharField(max_length=100)
+    zip_code = models.CharField(max_length=10)
     city = models.CharField(max_length=100)
     street = models.CharField(max_length=100)
     street_number = models.CharField(max_length=100, null=True, blank=True)
     neighborhood = models.CharField(max_length=100, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
+    dni = models.CharField(max_length=20)
     status = models.CharField(
         max_length=100, 
         default='pending', 

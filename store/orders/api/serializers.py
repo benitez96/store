@@ -12,7 +12,6 @@ class OrderSerilizer(serializers.ModelSerializer):
     items = ItemSerializer(many=True)
 
     def create(self, validated_data):
-        __import__('ipdb').set_trace()
         items = validated_data.pop('items')
         order = Order.objects.create(**validated_data)
         
