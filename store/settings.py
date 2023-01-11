@@ -35,7 +35,7 @@ class Common(Configuration):
         'rest_framework',
         'drf_yasg',
         'corsheaders',
-        'store_app',
+        'products',
         'orders',
     ]
 
@@ -93,10 +93,16 @@ class Common(Configuration):
     # https://docs.djangoproject.com/en/{{ docs_version }}/ref/settings/#databases
     # http://django-configurations.readthedocs.org/en/latest/values/#configurations.values.DatabaseURLValue
 
-    DATABASES = values.DatabaseURLValue('sqlite:///%s' % os.path.join(BASE_DIR, 'db.sqlite3'),
-                                        environ=True)
-
-
+    DATABASES = {
+        "default": {
+            "ENGINE": os.environ.get("SQL_ENGINE"),
+            "NAME": os.environ.get("SQL_DATABASE"),
+            "USER": os.environ.get("SQL_USER"),
+            "PASSWORD": os.environ.get("SQL_PASSWORD"),
+            "HOST": os.environ.get("SQL_HOST"),
+            "PORT": os.environ.get("SQL_PORT"),
+        }
+    }
 
 
     DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
@@ -126,7 +132,8 @@ class Dev(Common):
     The in-development settings and the default configuration.
     """
 
-    DOTENV = os.path.join(Common.BASE_DIR, '.env.development')
+    # DOTENV = os.path.join(Common.BASE_DIR, '.env.development')
+    # ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
     SWAGGER_SETTINGS = {
         "SECURITY_DEFINITIONS": {
@@ -142,6 +149,7 @@ class Prod(Common):
     The in-production settings.
     """
 
-    DOTENV = os.path.join(Common.BASE_DIR, '.env')
+    # DOTENV = os.path.join(Common.BASE_DIR, '.env.production')
     DEBUG = False
     TEMPLATE_DEBUG = DEBUG
+

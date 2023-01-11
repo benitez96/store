@@ -14,10 +14,12 @@ class Product(models.Model):
 
     def get_sizes_stock(self):
         exclude = ('id', 'product_id')
-        return sum([
-            getattr(self.sizes, size.attname) for size in self._meta.get_fields() \
-            if size.attname not in exclude
-        ])
+        # res = sum([
+        #     getattr(self.sizes, size.attname) for size in self._meta.get_fields() \
+        #     if size.attname not in exclude
+        # ])
+        res = self.sizes.s + self.sizes.m + self.sizes.l + self.sizes.xl + self.sizes.xxl + self.sizes.xxxl
+        return res
 
     def main_image(self):
         image = self.images.filter(is_main=True).first()
