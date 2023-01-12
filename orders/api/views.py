@@ -15,6 +15,7 @@ class OrderView(generics.CreateAPIView):
     serializer_class = OrderSerilizer
 
     def post(self, request, *args, **kwargs):
+        # import wdb; wdb.set_trace()
         data = JSONParser().parse(request)
 
         for item in data['items']:
@@ -75,13 +76,17 @@ class OrderView(generics.CreateAPIView):
             #     "pending": "http://www.pending.com"
             # },
             # "auto_return": "approved",
-            # "notification_url": "https://www.your-site.com/ipn",
+            "notification_url": f"{request.get_host()}/payments/",
             "statement_descriptor": "SODAN Clothes",
             "expires": True,
             "expiration_date_from": expiration_date_from.isoformat(),
-            "expiration_date_to": expiration_date_to.isoformat()
+            "expiration_date_to": expiration_date_to.isoformat(),
+            "metadata": {'order_id': order.id},
+            # "external_reference": order.id,
 
         }
+
+        print(preference_data)
 
         sdk = mercadopago.SDK(settings.MP_ACCESS_TOKEN)
 
@@ -94,3 +99,30 @@ class OrderView(generics.CreateAPIView):
         return Response(checkout_url, status=HTTPStatus.OK)
     
         
+class PaymentView(APIView):
+
+
+    def post(self, request, *args, **kwargs):
+        # __import__('ipdb').set_trace()
+        data = request.data
+        print(request, request)
+        print('data', data)
+        print(request)
+        if data['action'] == 'payment_created':
+            print('entre')
+        payment_id = data.data['id']
+# {
+#   "id": 12345,
+#   "live_mode": true,
+#   "type": "payment",
+#   "date_created": "2015-03-25T10:04:58.396-04:00",
+#   "application_id": 123123123,
+#   "user_id": 44444,
+#   "version": 1,
+#   "api_version": "v1",
+#   "action": "payment.created",
+#   "data": {
+#       "id": "999999999"
+#   }
+# }
+
