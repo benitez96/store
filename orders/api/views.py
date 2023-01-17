@@ -131,7 +131,7 @@ class OrderView(generics.CreateAPIView):
 
         }
 
-        __import__('pprint').pprint(preference_data)
+        # __import__('pprint').pprint(preference_data)
 
         sdk = mercadopago.SDK(settings.MP_ACCESS_TOKEN)
 
