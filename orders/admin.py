@@ -24,7 +24,9 @@ class OrderAdmin(admin.ModelAdmin):
         'street',
         'street_number',
         'neighborhood',
-        'status',
+        'shipping_status',
+        'shipping_code',
+        'payment_status',
         'total_amount',
         'created_at',
         'modified_at'

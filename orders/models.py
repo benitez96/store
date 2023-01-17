@@ -18,7 +18,8 @@ class Order(models.Model):
     neighborhood = models.CharField(max_length=100, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     dni = models.CharField(max_length=20)
-    status = models.CharField(
+    shipping_code = models.CharField(max_length=250, null=True, blank=True)
+    shipping_status = models.CharField(
         max_length=100, 
         default='pending', 
         choices=[
@@ -29,8 +30,9 @@ class Order(models.Model):
     )
 
     total_amount = models.FloatField()
-    # payment = models.OneToOneField(Payment)
-    # payment_status = models.CharField
+    payment_id = models.CharField(max_length=250, null=True, blank=True)
+    payment_status = models.CharField(max_length=250, null=True, blank=True)
+    description = models.CharField(max_length=550, default="")
 
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)

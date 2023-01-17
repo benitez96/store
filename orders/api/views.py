@@ -5,10 +5,54 @@ from rest_framework import generics, permissions
 from http import HTTPStatus
 from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
+from rest_framework.status import HTTP_202_ACCEPTED
 from rest_framework.views import APIView
+import requests
+import json
 from django.conf import settings
 from ..models import *
 from .serializers import *
+
+
+def process_payment(data):
+
+    payment_id = data['data']['id']
+    # Obtener información del pago utilizando la API de Mercado Pago
+    url = f"https://api.mercadopago.com/v1/payments/{payment_id}"
+    headers = {'content-type': 'application/json', 'Authorization': f"Bearer {settings.MP_ACCESS_TOKEN}"}
+    response = requests.get(url, headers=headers)
+    payment_info = json.loads(response.text)
+    payment_id = payment_info['id']
+    order_id = payment_info['external_reference']
+
+    # Actualizar el estado del pedido en base a la información recibida
+
+    order = Order.objects.get(pk=order_id)
+    order.payment_id = payment_id
+    order.payment_status = payment_info['status']
+
+    for item in order.items.all():
+
+        prod = Product.objects.prefetch_related('sizes').get(id=item.product_id)
+        current_qty = getattr(prod.sizes, item.size)
+
+        if current_qty < item.quantity:
+            order.payment_status = 'Stock insuficiente'
+            prod.in_stock = False
+            continue
+
+        setattr(prod.sizes, item.size, current_qty - item.quantity)
+
+        if not prod.get_sizes_stock():
+            prod.is_active = False
+            prod.in_stock = False
+
+        # actualizo stock
+        prod.sizes.save()
+        prod.save()
+
+
+    order.save()
 
 class OrderView(generics.CreateAPIView):
 
@@ -76,17 +120,18 @@ class OrderView(generics.CreateAPIView):
             #     "pending": "http://www.pending.com"
             # },
             # "auto_return": "approved",
-            "notification_url": f"{request.get_host()}/payments/",
+            # "notification_url": f"{request.get_host()}/payments/",
+            "notification_url": f"https://0938-181-97-224-45.sa.ngrok.io/api/v1/payments/",
             "statement_descriptor": "SODAN Clothes",
             "expires": True,
             "expiration_date_from": expiration_date_from.isoformat(),
             "expiration_date_to": expiration_date_to.isoformat(),
-            "metadata": {'order_id': order.id},
-            # "external_reference": order.id,
+            "external_reference": order.id,
+            # "metadata": {'order_id': order.id},
 
         }
 
-        print(preference_data)
+        __import__('pprint').pprint(preference_data)
 
         sdk = mercadopago.SDK(settings.MP_ACCESS_TOKEN)
 
@@ -103,26 +148,17 @@ class PaymentView(APIView):
 
 
     def post(self, request, *args, **kwargs):
-        # __import__('ipdb').set_trace()
-        data = request.data
-        print(request, request)
-        print('data', data)
-        print(request)
-        if data['action'] == 'payment_created':
-            print('entre')
-        payment_id = data.data['id']
-# {
-#   "id": 12345,
-#   "live_mode": true,
-#   "type": "payment",
-#   "date_created": "2015-03-25T10:04:58.396-04:00",
-#   "application_id": 123123123,
-#   "user_id": 44444,
-#   "version": 1,
-#   "api_version": "v1",
-#   "action": "payment.created",
-#   "data": {
-#       "id": "999999999"
-#   }
-# }
+
+        # __import__('wdb').set_trace()
+
+        data = json.loads(request.body)
+        if data['type'] == 'payment':
+        # if data['type'] == 'test':
+            if data['action'] == 'payment.created':
+            # if data['action'] == 'test.created':
+                process_payment(data)
+            return Response(HTTP_202_ACCEPTED)
+        else:
+            #redirigir al usuario a la página de fallo
+            return HTTPException('Error. El pago ha fallado!')
 
