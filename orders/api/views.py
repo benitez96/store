@@ -120,7 +120,7 @@ class OrderView(generics.CreateAPIView):
             #     "pending": "http://www.pending.com"
             # },
             # "auto_return": "approved",
-            "notification_url": f"{request.get_host()}/api/v1/payments/",
+            "notification_url": f"https://www.sodanclothes.com/api/v1/payments/",
             "statement_descriptor": "SODAN Clothes",
             "expires": True,
             "expiration_date_from": expiration_date_from.isoformat(),
