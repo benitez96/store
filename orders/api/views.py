@@ -120,8 +120,7 @@ class OrderView(generics.CreateAPIView):
             #     "pending": "http://www.pending.com"
             # },
             # "auto_return": "approved",
-            # "notification_url": f"{request.get_host()}/payments/",
-            "notification_url": f"https://0938-181-97-224-45.sa.ngrok.io/api/v1/payments/",
+            "notification_url": f"{request.get_host()}/api/v1/payments/",
             "statement_descriptor": "SODAN Clothes",
             "expires": True,
             "expiration_date_from": expiration_date_from.isoformat(),
@@ -131,7 +130,7 @@ class OrderView(generics.CreateAPIView):
 
         }
 
-        # __import__('pprint').pprint(preference_data)
+        __import__('pprint').pprint(preference_data)
 
         sdk = mercadopago.SDK(settings.MP_ACCESS_TOKEN)
 
