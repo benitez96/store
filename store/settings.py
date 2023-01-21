@@ -132,7 +132,7 @@ class Dev(Common):
     The in-development settings and the default configuration.
     """
 
-    # DOTENV = os.path.join(Common.BASE_DIR, '.env.development')
+    DOTENV = os.path.join(Common.BASE_DIR, '.env.dev')
     # ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
     SWAGGER_SETTINGS = {

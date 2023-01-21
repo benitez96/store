@@ -18,6 +18,7 @@ class Order(models.Model):
     neighborhood = models.CharField(max_length=100, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     dni = models.CharField(max_length=20)
+    shipping_cost = models.FloatField(null=True, blank=True);
     shipping_code = models.CharField(max_length=250, null=True, blank=True)
     shipping_status = models.CharField(
         max_length=100, 

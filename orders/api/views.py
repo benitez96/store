@@ -114,6 +114,11 @@ class OrderView(generics.CreateAPIView):
                     "zip_code": order.zip_code
                 }
             },
+            "shipments":{
+                "cost": order.shipping_cost,
+                "mode": "not_specified"
+
+            },
             # "back_urls": {
             #     "success": "https://www.success.com",
             #     "failure": "http://www.failure.com",
