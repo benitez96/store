@@ -124,7 +124,7 @@ class Common(Configuration):
 
     STATIC_URL = values.Value('/static/')
 
-    MP_ACCESS_TOKEN = os.environ.get("MP_ACCESS_TOKEN")
+    MP_ACCESS_TOKEN = values.SecretValue()
 
 
 class Dev(Common):
