@@ -12,6 +12,10 @@ class Product(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
 
+
+    class Meta:
+        ordering = ['-pk']
+
     def get_sizes_stock(self):
         exclude = ('id', 'product_id')
         # res = sum([
