@@ -10,6 +10,10 @@ class ProductView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
+    class Meta:
+        ordering = ['-created_at']
+
+
 class ProductDetailView(generics.RetrieveAPIView):
 
     lookup_field = 'slug'
